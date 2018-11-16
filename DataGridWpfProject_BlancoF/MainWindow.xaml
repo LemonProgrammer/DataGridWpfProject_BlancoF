@@ -4,9 +4,44 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataGridWpfProject_BlancoF"
+       
+        xmlns:ns="clr-namespace:System;assembly=mscorlib"
+        xmlns:models="clr-namespace:DataGridWpfProject_BlancoF.Models"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <Window.Resources>
+
+        <ObjectDataProvider x:Key="EnumDataProvider" 
+                            MethodName="GetValues"
+                            ObjectType="{x:Type ns:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="models:RestaurantType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    <StackPanel x:Name="MainPanel">
+        <DataGrid x:Name="RestaurantDataGrid" ItemsSource="{Binding }"
+                  CanUserAddRows="False" RowBackground="LightGoldenrodYellow"
+                  AlternatingRowBackground="OrangeRed"
+                  
+                  AutoGenerateColumns="False"
+                  >
+            <!-- Set AutoGenerateColumns to false for column custombility -->
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nums" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Location" Binding="{Binding Address}"/>
+                <DataGridCheckBoxColumn Header="IsOpen" Binding="{Binding Open}"/>
+                <!-- Must have Window.Resources to display Enums in ComboBox Column -->
+                <!-- Make sure to have the correct namespaces to be used -->
+                <DataGridComboBoxColumn Header="Type" SelectedItemBinding="{Binding Type}"
+                                        ItemsSource="{Binding Source={StaticResource EnumDataProvider}}" />
+            </DataGrid.Columns>
+            
+        </DataGrid>
+        <Button x:Name="AddRestaurant" Content="Add" Click="AddRestaurant_Click" Margin="20" Width="120"/>
+        <Slider x:Name="SliderControl" Margin="20" Width="200" Minimum="0.5" Maximum="1.5" Value="1" 
+                    TickFrequency=".1"/>
+        <ProgressBar Height="30" Width="200" Minimum="0.5" Maximum="1.5" 
+                     Value="{Binding Value,ElementName=SliderControl}"/>
+    </StackPanel>
 </Window>
